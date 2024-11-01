@@ -21,6 +21,7 @@ class AppBarCustom extends StatefulWidget {
 class _AppBarCustomState extends State<AppBarCustom> {
   ThemeColorExtension? _themeColorExt;
   late TextTheme textTheme;
+  // test
   @override
   Widget build(BuildContext context) {
     _themeColorExt = Theme.of(context).extension<ThemeColorExtension>();
