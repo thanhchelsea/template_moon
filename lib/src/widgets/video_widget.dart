@@ -35,6 +35,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.url.isEmpty) return Container();
+    print("dsdmsmdsm ${widget.url}");
     return Container(
       width: widget.width ?? 500,
       height: widget.height ?? 200,
