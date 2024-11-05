@@ -109,11 +109,11 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
           setState(() {
             data = widget.values;
           });
-          singleSelectController!.value = widget.initValue as T?;
-          if (multiSelectController != null) {
-            multiSelectController?.value =
-                (widget.initValues as List<T>?) ?? [];
-          }
+          // singleSelectController!.value = widget.initValue as T?;
+          // if (multiSelectController != null) {
+          //   multiSelectController?.value =
+          //       (widget.initValues as List<T>?) ?? [];
+          // }
         }
       },
     );
