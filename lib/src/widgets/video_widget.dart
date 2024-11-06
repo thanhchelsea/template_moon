@@ -95,7 +95,7 @@ class VideoPLayerMoon extends StatefulWidget {
     this.controls = true,
     this.videoType = RawHlsVideoType.livestream,
     this.onFinished,
-    this.autoPlay = true,
+    this.autoPlay = false,
     this.disposeWhenNotVisible = true,
     this.width,
     this.height,
