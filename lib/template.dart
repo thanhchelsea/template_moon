@@ -15,9 +15,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:template/generated/assets.gen.dart';
 import 'package:template/helper/helper.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:html' as html;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js;
+import 'dart:ui_web' as ui;
+import 'package:random_string/random_string.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 part 'src/widgets/toast.dart';
 part 'src/values/colors.dart';
 part 'src/widgets/text_field.dart';
@@ -40,5 +47,6 @@ part 'src/widgets/tree_fodel.dart';
 part 'src/widgets/text_field_url_or_upload_image.dart';
 part 'src/widgets/image_preview.dart';
 part 'src/widgets/video_widget.dart';
-
+part 'src/widgets/line_chart.dart';
 part 'src/utils/extention.dart';
+part 'src/utils/ultils.dart';
