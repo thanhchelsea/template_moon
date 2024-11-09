@@ -30,6 +30,9 @@ dependencies:
   syncfusion_flutter_charts: ^27.1.51
   random_string: ^2.3.1
   visibility_detector: ^0.4.0+2
+  animated_tree_view: ^2.3.0
+  equatable: ^2.0.5
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -39,7 +42,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner:
   flutter_gen_runner:
-
+  freezed: ^2.4.5
+  json_serializable: ^6.7.1
+  retrofit_generator:
 
 flutter:
   uses-material-design: true
