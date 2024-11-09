@@ -30,8 +30,7 @@ class TreeFodel<U extends Object> extends StatefulWidget {
   List<dynamic> products;
   List<dynamic>? objects;
   Widget Function(dynamic object, int index)? renderObjectItem;
-  Iterable<dynamic> Function(dynamic)?
-      childrenProvider; // Đảm bảo trả về Iterable<U>
+  Iterable<dynamic> Function(dynamic)? childrenProvider; // Đảm bảo trả về Iterable<U>
   Function? onTapEntity;
   Widget? fodelBottomAction;
   Widget? fodelTopAction;
@@ -52,11 +51,11 @@ class TreeFodel<U extends Object> extends StatefulWidget {
 class _TreeFodelState<U extends Object> extends State<TreeFodel> {
   ThemeColorExtension? themeColorExt;
   List<U> data = [];
-  late final TreeController<U> treeController;
+  late final treeFodel.TreeController<U> treeController;
 
   void initController() {
     // (CategoryEntity node) => node.listChild ?? [],
-    treeController = TreeController<U>(
+    treeController = treeFodel.TreeController<U>(
       roots: widget.entitys.cast<U>(),
       childrenProvider: (U node) {
         Iterable<U> data = widget.childrenProvider!(node) as Iterable<U>;
@@ -109,7 +108,7 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
     super.dispose();
   }
 
-  TreeEntry<U>? treeEntrySelected;
+  treeFodel.TreeEntry<U>? treeEntrySelected;
   U? selected;
   @override
   Widget build(BuildContext context) {
@@ -143,13 +142,12 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
                   if (widget.fodelTopAction != null) widget.fodelTopAction!,
                   // if (widget.fodelTopAction != null) const Gap(12),
                   Expanded(
-                    child: AnimatedTreeView<U>(
+                    child: treeFodel.AnimatedTreeView<U>(
                       treeController: treeController,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                       nodeBuilder: (
                         BuildContext context,
-                        TreeEntry<U> entry,
+                        treeFodel.TreeEntry<U> entry,
                       ) {
                         return Column(
                           children: [
@@ -186,8 +184,7 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
                       },
                     ),
                   ),
-                  if (widget.fodelBottomAction != null)
-                    widget.fodelBottomAction!,
+                  if (widget.fodelBottomAction != null) widget.fodelBottomAction!,
                 ],
               ),
             ),
@@ -207,8 +204,7 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
                 children: [
                   widget.renderHeaderRigthContent ?? Container(),
                   const Gap(6),
-                  if (widget.products.isNotEmpty ||
-                      (widget.objects?.isNotEmpty ?? false))
+                  if (widget.products.isNotEmpty || (widget.objects?.isNotEmpty ?? false))
                     Container(
                       width: double.infinity,
                       padding: widget.paddingListProduct,
@@ -222,9 +218,7 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
                             width: double.infinity,
                             child: Wrap(
                               children: List.generate(
-                                widget.objects != null
-                                    ? widget.objects!.length
-                                    : widget.products.length,
+                                widget.objects != null ? widget.objects!.length : widget.products.length,
                                 (index) {
                                   return Container(
                                     constraints: widget.constraints,
@@ -237,22 +231,13 @@ class _TreeFodelState<U extends Object> extends State<TreeFodel> {
                                       },
                                       child: Stack(
                                         children: [
-                                          widget.renderObjectItem?.call(
-                                                  widget.objects?[index],
-                                                  index) ??
-                                              Text(
-                                                  "them ham custom render data"),
-                                          if (_isHovered == index &&
-                                              widget.topLeftWidgetProduct !=
-                                                  null)
+                                          widget.renderObjectItem?.call(widget.objects?[index], index) ?? Text("them ham custom render data"),
+                                          if (_isHovered == index && widget.topLeftWidgetProduct != null)
                                             Positioned(
                                               left: 2,
                                               top: 2,
-                                              child: widget
-                                                  .topLeftWidgetProduct!
-                                                  .call(widget.objects != null
-                                                      ? widget.objects![index]
-                                                      : widget.products[index]),
+                                              child: widget.topLeftWidgetProduct!
+                                                  .call(widget.objects != null ? widget.objects![index] : widget.products[index]),
                                             ),
                                         ],
                                       ),
@@ -300,7 +285,7 @@ class MyTreeTile<U extends Object> extends StatefulWidget {
   Widget Function(dynamic entity, bool? isHelight)? renderItemFodel;
   Widget Function(dynamic entity, bool? isHelight)? renderIcon;
   Widget Function(dynamic)? hoverActionIconFodel;
-  final TreeEntry<U> entry;
+  final treeFodel.TreeEntry<U> entry;
   final VoidCallback onTap;
   bool isHelight;
   @override
@@ -323,28 +308,19 @@ class _MyTreeTileState extends State<MyTreeTile> {
             flex: 7,
             child: InkWell(
               onTap: widget.onTap,
-              child: TreeIndentation(
+              child: treeFodel.TreeIndentation(
                 entry: widget.entry,
-                guide: const IndentGuide.connectingLines(indent: 20),
+                guide: const treeFodel.IndentGuide.connectingLines(indent: 20),
                 child: Row(
                   children: [
-                    widget.renderIcon
-                            ?.call(widget.entry.node, widget.isHelight) ??
-                        FolderButton(
+                    widget.renderIcon?.call(widget.entry.node, widget.isHelight) ??
+                        treeFodel.FolderButton(
                           iconSize: 18,
-                          disabledColor:
-                              widget.isHelight ? Colors.redAccent : null,
-                          isOpen: widget.entry.hasChildren
-                              ? widget.entry.isExpanded
-                              : null,
-                          onPressed:
-                              widget.entry.hasChildren ? widget.onTap : null,
+                          disabledColor: widget.isHelight ? Colors.redAccent : null,
+                          isOpen: widget.entry.hasChildren ? widget.entry.isExpanded : null,
+                          onPressed: widget.entry.hasChildren ? widget.onTap : null,
                           // icon: icon,
-                          color: widget.isHelight
-                              ? Colors.redAccent
-                              : Theme.of(context)
-                                  .extension<ThemeColorExtension>()
-                                  ?.ksPrimary,
+                          color: widget.isHelight ? Colors.redAccent : Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary,
                         ),
                     const Gap(4),
                     Expanded(
@@ -367,9 +343,7 @@ class _MyTreeTileState extends State<MyTreeTile> {
                 // if (widget.hoverActionIconFodel != null) const Gap(4),
                 if (widget.hoverActionIconFodel != null)
                   Expanded(
-                    child: _isHovered
-                        ? widget.hoverActionIconFodel!.call(widget.entry.node)
-                        : Container(),
+                    child: _isHovered ? widget.hoverActionIconFodel!.call(widget.entry.node) : Container(),
                   )
                 else
                   Container(),

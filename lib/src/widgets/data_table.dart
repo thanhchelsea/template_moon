@@ -42,8 +42,7 @@ class _DataTableCustomState extends State<DataTableCustom> {
     if (widget.scrollController != null) {
       widget.scrollController?.addListener(
         () {
-          if (widget.scrollController!.position.pixels >=
-              widget.scrollController!.position.maxScrollExtent) {
+          if (widget.scrollController!.position.pixels >= widget.scrollController!.position.maxScrollExtent) {
             widget.onLoadMore?.call();
           }
         },
@@ -70,8 +69,7 @@ class _DataTableCustomState extends State<DataTableCustom> {
         color: Colors.white,
         child: DataTable2(
           scrollController: widget.scrollController,
-          dataRowColor:
-              WidgetStateProperty.all(widget.backgoundColor ?? Colors.white),
+          dataRowColor: WidgetStateProperty.all(widget.backgoundColor ?? Colors.white),
           columnSpacing: 12,
           horizontalMargin: widget.paddingHorzi ?? 12,
           minWidth: 600,
@@ -81,6 +79,7 @@ class _DataTableCustomState extends State<DataTableCustom> {
           ),
           headingTextStyle: const TextStyle(color: Colors.white),
           dataRowHeight: widget.dataRowHeight,
+
           // fixedColumnsColor: Colors.red,
           isHorizontalScrollBarVisible: false,
           isVerticalScrollBarVisible: true,
