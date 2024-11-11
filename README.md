@@ -74,6 +74,8 @@ b1: xoá bỏ index nếu có template:<br>
 git submodule deinit -f packages/template<br>
 rm -rf .git/modules/packages/template<br>
 git rm -f packages/template<br>
+git submodule add https://github.com/thanhchelsea/template.git packages/template
+
 b2: git submodule update --init --recursive  (lấy code mới nhất về theo chỉ số được đánh)<br>
 =====&gt; Mỗi khi thay đổi code trong template:<br>
 b1: cd packages/template<br>
