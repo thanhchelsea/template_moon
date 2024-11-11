@@ -33,6 +33,7 @@ dependencies:
   animated_tree_view: ^2.3.0
   equatable: ^2.0.5
   dio: ^5.4.0
+  tab_container: ^3.5.3
 
 dev_dependencies:
   flutter_test:
