@@ -43,7 +43,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner:
   flutter_gen_runner:
-
+  freezed: ^2.4.5
+  json_serializable: ^6.7.1
+  retrofit_generator:
 
 flutter:
   uses-material-design: true
