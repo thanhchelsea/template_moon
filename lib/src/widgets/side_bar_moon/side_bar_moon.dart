@@ -16,6 +16,7 @@ class SidebarMoon extends StatefulWidget {
     this.fullnameUser,
     this.onChangeFeature,
     this.itemBuilder,
+    this.onTapLogout,
   }) : super(key: key);
   Dio dio;
   int tagId;
@@ -34,6 +35,8 @@ class SidebarMoon extends StatefulWidget {
     TreeNode<TreeNodeExt> item,
     bool isSelected,
   )? itemBuilder;
+
+  Function? onTapLogout;
   @override
   State<SidebarMoon> createState() => _SidebarMoonState();
 }
@@ -311,7 +314,9 @@ class _SidebarMoonState extends State<SidebarMoon> {
               Expanded(
                 child: Center(
                   child: IconButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      widget.onTapLogout?.call();
+                    },
                     icon: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

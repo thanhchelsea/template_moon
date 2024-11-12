@@ -5,10 +5,12 @@ class LineChart<T, U> extends StatefulWidget {
     required this.data,
     required this.getLineName,
     required this.charName,
+    this.isSpline = true,
   });
   Map<T, List<ChartData<U>>> data;
   String Function(dynamic t) getLineName;
   String charName;
+  bool isSpline;
   @override
   _LineChartState createState() => _LineChartState<T, U>();
 }
@@ -37,13 +39,10 @@ class _LineChartState<T, U> extends State<LineChart> {
 
         primaryXAxis: u is DateTime
             ? DateTimeAxis(
-                dateFormat:
-                    DateFormat('dd/MM'), // Hiển thị ngày tháng trên trục hoành
+                dateFormat: DateFormat('dd/MM'), // Hiển thị ngày tháng trên trục hoành
                 intervalType: DateTimeIntervalType.days,
-                minimum: findMinX(widget.data as Map<dynamic,
-                    List<ChartData<DateTime>>>), // Giới hạn ngày bắt đầu
-                maximum: findMaxX(widget.data as Map<dynamic,
-                    List<ChartData<DateTime>>>), // Giới hạn ngày kết thúc
+                minimum: findMinX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày bắt đầu
+                maximum: findMaxX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày kết thúc
                 majorGridLines: const MajorGridLines(width: 0),
                 majorTickLines: const MajorTickLines(size: 0),
               )
@@ -74,7 +73,7 @@ class _LineChartState<T, U> extends State<LineChart> {
             color: Colors.black,
           ),
         ), // Hiển thị giá trị khi người dùng nhấn vào điểm
-        series: _getLineSeries(), // Dữ liệu các đường
+        series: widget.isSpline ? _getSplineLineSeries() : _getLineSeries(), // Dữ liệu các đường
       ),
     );
 
@@ -142,7 +141,7 @@ class _LineChartState<T, U> extends State<LineChart> {
   }
 
   // Hàm tạo danh sách các series (dây) khác nhau với màu khác nhau
-  List<SplineSeries<ChartData, dynamic>> _getLineSeries() {
+  List<SplineSeries<ChartData, dynamic>> _getSplineLineSeries() {
     return widget.data.entries.map((entry) {
       List<ChartData> chartData = entry.value;
       Color colorLine = Colors.black;
@@ -159,6 +158,32 @@ class _LineChartState<T, U> extends State<LineChart> {
         name: lineName, // Đặt tên cho từng dây
         width: 2,
         splineType: SplineType.natural, // Để có đường cong tự nhiên hơn
+        dataLabelMapper: (ChartData report, _) => report.y!.toString(),
+        markerSettings: const MarkerSettings(
+          isVisible: true,
+          width: 4,
+          height: 4,
+        ), // Hiển thị dấu trên từng điểm
+      );
+    }).toList();
+  }
+
+  List<LineSeries<ChartData, dynamic>> _getLineSeries() {
+    return widget.data.entries.map((entry) {
+      List<ChartData> chartData = entry.value;
+      Color colorLine = Colors.black;
+      String lineName = widget.getLineName(entry.key);
+      if (chartData.isNotEmpty) {
+        colorLine = chartData.first.color ?? Colors.black;
+      }
+
+      return LineSeries<ChartData, dynamic>(
+        dataSource: chartData,
+        xValueMapper: (ChartData sales, _) => sales.x,
+        yValueMapper: (ChartData sales, _) => sales.y,
+        color: colorLine, // Mỗi dây có màu khác nhau
+        name: lineName, // Đặt tên cho từng dây
+        width: 2,
         dataLabelMapper: (ChartData report, _) => report.y!.toString(),
         markerSettings: const MarkerSettings(
           isVisible: true,
