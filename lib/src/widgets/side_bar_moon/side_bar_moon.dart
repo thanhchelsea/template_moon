@@ -8,7 +8,6 @@ class SidebarMoon extends StatefulWidget {
     required this.dio,
     required this.tagId,
     required this.projectName,
-    this.initfeatureSelected,
     this.getIconWithName,
     this.backgroundColor,
     this.onTreeReady,
@@ -27,7 +26,6 @@ class SidebarMoon extends StatefulWidget {
 
   ///hàm này trả về icon theo iconurl từ be trả về nhé ae
   Widget Function(String iconUrl)? getIconWithName;
-  final TreeNode<TreeNodeExt>? initfeatureSelected;
   void Function(TreeNode<TreeNodeExt> item, BuildContext context)? onChangeFeature;
   void Function(TreeViewController<TreeNodeExt, TreeNode<TreeNodeExt>>)? onTreeReady;
   String? initRoute;
@@ -60,6 +58,7 @@ class _SidebarMoonState extends State<SidebarMoon> {
     setState(() {
       features.addAll(feat);
     });
+
     return data;
   }
 
@@ -89,8 +88,16 @@ class _SidebarMoonState extends State<SidebarMoon> {
           key: item.featureId?.toString() ?? 'unknown',
           data: nodeData,
         );
-        if (item.route == widget.initRoute) {
-          featureSelected = treeNode;
+        if (widget.initRoute != null) {
+          if (widget.initRoute!.contains(item.route ?? '')) {
+            featureSelected = treeNode;
+          }
+          var subPaths = widget.initRoute!.split('/');
+          if (subPaths.length > 2) {
+            if ('${nodeData.parentPathRouter}/${nodeData.pathRouter}' == widget.initRoute!) {
+              featureSelected = treeNode;
+            }
+          }
         }
 
         if (item.children != null && item.children!.isNotEmpty) {
@@ -113,7 +120,6 @@ class _SidebarMoonState extends State<SidebarMoon> {
   void initState() {
     _service = SideBarService(widget.dio);
     getFeature();
-
     super.initState();
   }
 
@@ -166,6 +172,9 @@ class _SidebarMoonState extends State<SidebarMoon> {
     treeViewController = controller;
     if (featureSelected != null) {
       if (featureSelected!.parent != null) treeViewController?.expandAllChildren(featureSelected!.data!.parent!);
+      // else {
+      //   treeViewController?.expandAllChildren(featureSelected!);
+      // }
     }
   }
 
