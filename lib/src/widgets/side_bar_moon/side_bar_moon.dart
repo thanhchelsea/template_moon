@@ -17,6 +17,7 @@ class SidebarMoon extends StatefulWidget {
     this.onChangeFeature,
     this.itemBuilder,
     this.onTapLogout,
+    this.expandAll,
   }) : super(key: key);
   Dio dio;
   int tagId;
@@ -24,6 +25,7 @@ class SidebarMoon extends StatefulWidget {
   String? avatar;
   String? fullnameUser;
   Color? backgroundColor;
+  bool? expandAll;
 
   ///hàm này trả về icon theo iconurl từ be trả về nhé ae
   Widget Function(String iconUrl)? getIconWithName;
@@ -173,6 +175,9 @@ class _SidebarMoonState extends State<SidebarMoon> {
     BuildContext context,
   ) {
     treeViewController = controller;
+    if (widget.expandAll == true) {
+      treeViewController?.expandAllChildren(features);
+    }
     if (featureSelected != null) {
       if (featureSelected!.parent != null) treeViewController?.expandAllChildren(featureSelected!.data!.parent!);
       // else {
@@ -216,6 +221,7 @@ class _SidebarMoonState extends State<SidebarMoon> {
                 },
                 onTreeReady: (controller) {
                   //todo check router
+
                   initTreeViewContrl(controller, context);
                   widget.onTreeReady?.call(controller);
                 },
