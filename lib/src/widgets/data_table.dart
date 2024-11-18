@@ -79,7 +79,6 @@ class _DataTableCustomState extends State<DataTableCustom> {
           ),
           headingTextStyle: const TextStyle(color: Colors.white),
           dataRowHeight: widget.dataRowHeight,
-
           // fixedColumnsColor: Colors.red,
           isHorizontalScrollBarVisible: false,
           isVerticalScrollBarVisible: true,

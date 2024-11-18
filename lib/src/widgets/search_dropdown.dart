@@ -79,8 +79,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
   void initState() {
     data = widget.values;
     if (widget.singleSelectController != null) {
-      singleSelectController = (widget.singleSelectController!
-        ..value = widget.initValue as T?) as SingleSelectController<T?>?;
+      singleSelectController = (widget.singleSelectController!..value = widget.initValue as T?) as SingleSelectController<T?>?;
     } else {
       singleSelectController = SingleSelectController(widget.initValue as T?);
     }
@@ -92,8 +91,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
             // ..value = (widget.initialItems ?? <T>[]) as List<T>)
             as MultiSelectController<T>?;
       } else {
-        multiSelectController =
-            MultiSelectController((widget.initialItems ?? []) as List<T>);
+        multiSelectController = MultiSelectController((widget.initialItems ?? []) as List<T>);
       }
     }
 
@@ -104,8 +102,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
   void didUpdateWidget(covariant SearchDropdown oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        if (oldWidget.enable != widget.enable ||
-            oldWidget.values != widget.values) {
+        if (oldWidget.enable != widget.enable || oldWidget.values != widget.values) {
           setState(() {
             data = widget.values;
           });
@@ -146,8 +143,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                 vertical: 8,
                 horizontal: 8,
               ),
-              futureRequest: (p0) =>
-                  widget.getProductFunc!(p0) as Future<List<T>>,
+              futureRequest: (p0) => widget.getProductFunc!(p0) as Future<List<T>>,
               hintText: widget.hintText ?? 'Search value',
               hintBuilder: (context, hint, enabled) => Text(
                 widget.hintText ?? 'Search value',
@@ -212,7 +208,6 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
           case TypeDropdown.normal:
             dropdown = CustomDropdown<T>(
               controller: singleSelectController,
-
               enabled: widget.enable ?? true,
               closedHeaderPadding: const EdgeInsets.symmetric(
                 vertical: 8,
@@ -260,8 +255,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                 vertical: 8,
                 horizontal: 8,
               ),
-              futureRequest: (p0) =>
-                  widget.getProductFunc!(p0) as Future<List<T>>,
+              futureRequest: (p0) => widget.getProductFunc!(p0) as Future<List<T>>,
               hintText: widget.hintText ?? 'Search value',
               hintBuilder: (context, hint, enabled) => Text(
                 widget.hintText ?? 'Search value',
@@ -274,10 +268,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
               listItemBuilder: widget.builderItems,
               decoration: CustomDropdownDecoration(
                 listItemDecoration: ListItemDecoration(
-                  selectedColor: Theme.of(context)
-                      .extension<ThemeColorExtension>()
-                      ?.ksPrimary
-                      .withOpacity(0.2),
+                  selectedColor: Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary.withOpacity(0.2),
                 ),
                 closedErrorBorder: Border.all(color: Colors.red, width: 1),
                 closedBorderRadius: BorderRadius.circular(8),
@@ -298,14 +289,10 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                     selectedItem.length,
                     (index) {
                       return Container(
-                        constraints:
-                            const BoxConstraints(minWidth: 1, maxWidth: 500),
+                        constraints: const BoxConstraints(minWidth: 1, maxWidth: 500),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: Theme.of(context)
-                              .extension<ThemeColorExtension>()
-                              ?.ksPrimary
-                              .withOpacity(0.2),
+                          color: Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary.withOpacity(0.2),
                         ),
                         margin: const EdgeInsets.only(right: 12, bottom: 12),
                         padding: const EdgeInsets.symmetric(
@@ -324,8 +311,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                                 child: InkWell(
                                   onTap: () {
                                     if (multiSelectController != null) {
-                                      multiSelectController!
-                                          .remove(selectedItem[index]);
+                                      multiSelectController!.remove(selectedItem[index]);
                                     }
                                     widget.onListChanged?.call(
                                       multiSelectController?.value ?? [],
@@ -373,10 +359,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
               listItemBuilder: widget.builderItems,
               decoration: CustomDropdownDecoration(
                 listItemDecoration: ListItemDecoration(
-                  selectedColor: Theme.of(context)
-                      .extension<ThemeColorExtension>()
-                      ?.ksPrimary
-                      .withOpacity(0.2),
+                  selectedColor: Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary.withOpacity(0.2),
                 ),
                 closedErrorBorder: Border.all(color: Colors.red, width: 1),
                 closedBorderRadius: BorderRadius.circular(8),
@@ -393,14 +376,10 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                     selectedItem.length,
                     (index) {
                       return Container(
-                        constraints:
-                            const BoxConstraints(minWidth: 1, maxWidth: 500),
+                        constraints: const BoxConstraints(minWidth: 1, maxWidth: 500),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: Theme.of(context)
-                              .extension<ThemeColorExtension>()
-                              ?.ksPrimary
-                              .withOpacity(0.2),
+                          color: Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary.withOpacity(0.2),
                         ),
                         margin: const EdgeInsets.only(right: 12, bottom: 12),
                         padding: const EdgeInsets.symmetric(
@@ -418,8 +397,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown> {
                                 child: InkWell(
                                   onTap: () {
                                     if (multiSelectController != null) {
-                                      multiSelectController!
-                                          .remove(selectedItem[index]);
+                                      multiSelectController!.remove(selectedItem[index]);
                                     }
                                     widget.onListChanged?.call(
                                       multiSelectController?.value ?? [],
