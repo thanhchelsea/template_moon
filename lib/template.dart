@@ -22,6 +22,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:tab_container/tab_container.dart';
 import 'package:template/generated/assets.gen.dart';
 import 'package:template/helper/helper.dart';
 import 'package:template/src/features/featture/data/remote/feat.dart';
@@ -33,6 +34,10 @@ import 'package:template/src/widgets/side_bar_moon/model/tree_node_model.dart';
 import 'package:template/src/widgets/side_bar_moon/service/side_bar_service.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:html' as html;
+
+export 'src/widgets/side_bar_moon/model/feature_menu_model/feature_menu_model.dart';
+export 'src/widgets/side_bar_moon/model/tree_node_model.dart';
+
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
 import 'dart:ui_web' as ui;
@@ -64,3 +69,5 @@ part 'src/widgets/line_chart.dart';
 part 'src/utils/extention.dart';
 part 'src/utils/ultils.dart';
 part 'src/widgets/side_bar_moon/side_bar_moon.dart';
+part 'src/widgets/tab_container.dart';
+part 'src/widgets/react_icon.dart';

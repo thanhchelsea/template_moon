@@ -69,14 +69,12 @@ class _AppBarCustomState extends State<AppBarCustom> {
           ),
           Expanded(
             flex: 4,
-            child: widget.centerWidget ??
-                (widget.showBoxSearchCenter ? _renderBoxSearch() : Container()),
+            child: widget.centerWidget ?? (widget.showBoxSearchCenter ? _renderBoxSearch() : Container()),
           ),
           Container(
             padding: const EdgeInsets.only(right: 12),
             alignment: Alignment.centerRight,
-            child:
-                widget.actions.isNotEmpty ? widget.actions.first : Container(),
+            child: widget.actions.isNotEmpty ? widget.actions.first : Container(),
           ),
         ],
       ),
