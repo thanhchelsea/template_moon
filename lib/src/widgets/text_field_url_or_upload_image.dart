@@ -10,7 +10,9 @@ class TextFieldUrlOrUploadImage extends StatefulWidget {
     this.width,
     this.height,
     this.constraints,
-    required this.uploadImage,
+    this.uploadImage,
+    this.dio,
+    this.baseUrl,
   });
   TextEditingController? controller;
   String? hintText;
@@ -19,10 +21,11 @@ class TextFieldUrlOrUploadImage extends StatefulWidget {
   double? width;
   double? height;
   BoxConstraints? constraints;
-  Future<String?> Function(Uint8List s) uploadImage;
+  Future<String?> Function(Uint8List s)? uploadImage;
+  Dio? dio;
+  String? baseUrl;
   @override
-  State<TextFieldUrlOrUploadImage> createState() =>
-      _TextFieldUrlOrUploadImageState();
+  State<TextFieldUrlOrUploadImage> createState() => _TextFieldUrlOrUploadImageState();
 }
 
 class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
@@ -57,13 +60,28 @@ class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
 
   void uploadImage(Uint8List s) async {
     // var response = await _advertUsecase.uploadImage(images: s);
-    String? imagePath = await widget.uploadImage?.call(s);
-    // print("link anh ${response.data?.toJson()}");
-    if (imagePath != null) {
-      setState(() {
-        controller.text = imagePath;
-        urlImage = imagePath;
-      });
+    if (widget.uploadImage != null) {
+      String? imagePath = await widget.uploadImage?.call(s);
+      // print("link anh ${response.data?.toJson()}");
+      if (imagePath != null) {
+        setState(() {
+          controller.text = imagePath;
+          urlImage = imagePath;
+        });
+      }
+    } else {
+      if (widget.dio != null) {
+        var response = await AdvertUsecase(FeatRepoImpl(FeatService(
+          widget.dio!,
+          baseUrl: widget.baseUrl,
+        ))).uploadImage(
+          images: s,
+        );
+        setState(() {
+          controller.text = response.data?.filePath ?? '';
+          urlImage = response.data?.filePath ?? '';
+        });
+      }
     }
   }
 
