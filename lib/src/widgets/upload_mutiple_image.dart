@@ -83,12 +83,10 @@ class UploadMutipleImage extends StatefulWidget {
 }
 
 class _UploadMutipleImageState extends State<UploadMutipleImage> {
-  // final AdvertUsecase _advertUsecase = Injector.instance();
-
   List<ImageFileUrlModel> images = [];
   @override
   void initState() {
-    images = widget.imagesOld;
+    images = List.from(widget.imagesOld);
 
     super.initState();
   }
