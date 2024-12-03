@@ -3,7 +3,7 @@ part of template;
 extension DateTimeExt on DateTime {
   String formatDateTimeToddMMyyyy({String? formatString}) {
     // Định dạng DateTime theo dd-MM-yyyy HH:mm
-    DateFormat format = DateFormat(formatString ?? 'dd-MM-yyyy HH:mm');
+    DateFormat format = DateFormat(formatString ?? 'dd-MM-yyyy');
     return format.format(this);
   }
 
@@ -16,8 +16,7 @@ extension DateTimeExt on DateTime {
 extension StringExt on String {
   String toDateTimeString({String? format}) {
     DateTime dateTime = DateTime.parse(this);
-    final String formattedDate =
-        DateFormat(format ?? 'dd/MM/yyyy HH:mm').format(dateTime);
+    final String formattedDate = DateFormat(format ?? 'dd/MM/yyyy').format(dateTime);
     return formattedDate;
   }
 

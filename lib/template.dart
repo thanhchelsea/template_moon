@@ -9,6 +9,7 @@ import 'package:animated_tree_view/tree_view/tree_view.dart';
 import 'package:animated_tree_view/tree_view/widgets/expansion_indicator.dart';
 import 'package:animated_tree_view/tree_view/widgets/indent.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:chewie/chewie.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:dio/dio.dart';
@@ -39,6 +40,11 @@ import 'dart:html' as html;
 export 'src/widgets/side_bar_moon/model/feature_menu_model/feature_menu_model.dart';
 export 'src/widgets/side_bar_moon/model/tree_node_model.dart';
 
+export 'src/features/auth/domain/entity/user_profile/user_profile_entity.dart';
+export 'src/features/auth/domain/usecase/auth_usecase.dart';
+export 'src/features/auth/data/model/login_request/login_request_model.dart';
+export 'src/features/auth/domain/entity/login_response/login_response.dart';
+export 'src/template.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
 import 'dart:ui_web' as ui;

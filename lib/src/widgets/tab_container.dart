@@ -5,9 +5,11 @@ class TabContainerWidget extends StatefulWidget {
     super.key,
     required this.children,
     required this.title,
+    this.sizeTabLength = 100,
   });
   final List<Widget> children;
   final List<String> title;
+  final double sizeTabLength;
 
   @override
   State<TabContainerWidget> createState() => _TabContainerState();
@@ -31,7 +33,7 @@ class _TabContainerState extends State<TabContainerWidget> with TickerProviderSt
       controller: tabController,
       // tabsStart: 0.2,
       // tabsEnd: 0.9,
-      tabMaxLength: 100,
+      tabMaxLength: widget.sizeTabLength,
       // tabExtent: 80,
 
       borderRadius: BorderRadius.circular(10),

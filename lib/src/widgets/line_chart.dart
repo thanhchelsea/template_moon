@@ -1,16 +1,34 @@
 part of template;
 
+enum ChartType {
+  spilne,
+  line,
+  column,
+}
+
 class LineChart<T, U> extends StatefulWidget {
   LineChart({
     required this.data,
     required this.getLineName,
     required this.charName,
     this.isSpline = true,
+    this.getNameUnitOY,
+    this.tooltipBuilder,
+    this.chartType,
   });
   Map<T, List<ChartData<U>>> data;
   String Function(dynamic t) getLineName;
   String charName;
   bool isSpline;
+  String Function(int value)? getNameUnitOY;
+  ChartType? chartType;
+  Widget Function(
+    dynamic data,
+    ChartPoint<dynamic> point,
+    ChartSeries<dynamic, dynamic> series,
+    int pointIndex,
+    int seriesIndex,
+  )? tooltipBuilder;
   @override
   _LineChartState createState() => _LineChartState<T, U>();
 }
@@ -23,9 +41,21 @@ class _LineChartState<T, U> extends State<LineChart> {
     if (widget.data.values.isNotEmpty && widget.data.values.first.isNotEmpty) {
       u = widget.data.values.first.first.x as U;
     }
-    // else {
-    //   return child;
-    // }
+    var series;
+    switch (widget.chartType) {
+      case ChartType.line:
+        series = _getLineSeries();
+        break;
+      case ChartType.spilne:
+        series = _getSplineLineSeries();
+        break;
+      case ChartType.column:
+        series = _getColumnSeries();
+        break;
+      default:
+        series = _getLineSeries();
+    }
+
     child = Scaffold(
       body: SfCartesianChart(
         // Cho phép zoom và pan (cuộn)
@@ -36,7 +66,24 @@ class _LineChartState<T, U> extends State<LineChart> {
           enableMouseWheelZooming: true,
           enableSelectionZooming: true,
         ),
-
+        tooltipBehavior: TooltipBehavior(
+          enable: true,
+          canShowMarker: false,
+          color: const Color.fromARGB(255, 239, 246, 255),
+          animationDuration: 150,
+          textStyle: const TextStyle(
+            color: Colors.black,
+          ),
+          format: widget.tooltipBuilder != null ? 'point.x : point.y' : null, // Định dạng mặc định
+          builder: widget.tooltipBuilder,
+          // builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+          //   final value = data.y;
+          //   return Text(
+          //     '${_formatCurrency(value)}',
+          //     style: const TextStyle(color: Colors.black),
+          //   );
+          // },
+        ),
         primaryXAxis: u is DateTime
             ? DateTimeAxis(
                 dateFormat: DateFormat('dd/MM'), // Hiển thị ngày tháng trên trục hoành
@@ -59,21 +106,21 @@ class _LineChartState<T, U> extends State<LineChart> {
           axisLabelFormatter: (axisLabelRenderArgs) {
             final value = axisLabelRenderArgs.value.toInt();
             return ChartAxisLabel(
-              value.shorten(),
+              widget.getNameUnitOY?.call(value) ?? value.shorten(),
               const TextStyle(color: Colors.black),
             );
           },
         ),
-        tooltipBehavior: TooltipBehavior(
-          enable: true,
-          canShowMarker: false,
-          color: const Color.fromARGB(255, 239, 246, 255),
-          animationDuration: 150,
-          textStyle: const TextStyle(
-            color: Colors.black,
-          ),
-        ), // Hiển thị giá trị khi người dùng nhấn vào điểm
-        series: widget.isSpline ? _getSplineLineSeries() : _getLineSeries(), // Dữ liệu các đường
+        // tooltipBehavior: TooltipBehavior(
+        //   enable: true,
+        //   canShowMarker: false,
+        //   color: const Color.fromARGB(255, 239, 246, 255),
+        //   animationDuration: 150,
+        //   textStyle: const TextStyle(
+        //     color: Colors.black,
+        //   ),
+        // ), // Hiển thị giá trị khi người dùng nhấn vào điểm
+        series: series as List<CartesianSeries<dynamic, dynamic>>,
       ),
     );
 
@@ -190,6 +237,31 @@ class _LineChartState<T, U> extends State<LineChart> {
           width: 4,
           height: 4,
         ), // Hiển thị dấu trên từng điểm
+      );
+    }).toList();
+  }
+
+  List<ColumnSeries<ChartData, dynamic>> _getColumnSeries() {
+    return widget.data.entries.map((entry) {
+      List<ChartData> chartData = entry.value;
+      Color colorColumn = Colors.blue; // Màu mặc định cho cột
+      String columnName = widget.getLineName(entry.key);
+
+      if (chartData.isNotEmpty) {
+        colorColumn = chartData.first.color ?? Colors.blue;
+      }
+
+      return ColumnSeries<ChartData, dynamic>(
+        dataSource: chartData,
+        xValueMapper: (ChartData data, _) => data.x,
+        yValueMapper: (ChartData data, _) => data.y,
+        color: colorColumn, // Màu cho cột
+        name: columnName, // Đặt tên cho từng series
+
+        dataLabelSettings: const DataLabelSettings(
+          isVisible: false, // Hiển thị nhãn dữ liệu trên cột
+          textStyle: TextStyle(color: Colors.black),
+        ),
       );
     }).toList();
   }
