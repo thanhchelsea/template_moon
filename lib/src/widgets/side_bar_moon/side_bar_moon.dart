@@ -18,6 +18,7 @@ class SidebarMoon extends StatefulWidget {
     this.itemBuilder,
     this.onTapLogout,
     this.expandAll,
+    this.isExpandedSideBar = true,
   }) : super(key: key);
   Dio dio;
   int tagId;
@@ -26,6 +27,7 @@ class SidebarMoon extends StatefulWidget {
   String? fullnameUser;
   Color? backgroundColor;
   bool? expandAll;
+  bool isExpandedSideBar;
 
   ///hàm này trả về icon theo iconurl từ be trả về nhé ae
   Widget Function(String iconUrl)? getIconWithName;
@@ -45,11 +47,11 @@ class SidebarMoon extends StatefulWidget {
 
 class _SidebarMoonState extends State<SidebarMoon> {
   late SideBarService _service;
-
   TreeViewController<TreeNodeExt, TreeNode<TreeNodeExt>>? treeViewController;
   //danh mục menu nhé ae
   TreeNode<TreeNodeExt> features = TreeNode.root();
   TreeNode<TreeNodeExt>? featureSelected;
+  bool isExpandedSideBar = true;
 
 //call api lay ra danh sach feature
   Future<BaseModel<List<FeatureMenuModel>>> getFeature() async {
@@ -123,9 +125,21 @@ class _SidebarMoonState extends State<SidebarMoon> {
 
   @override
   void initState() {
+    isExpandedSideBar = widget.isExpandedSideBar;
     _service = SideBarService(widget.dio);
+
     getFeature();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SidebarMoon oldWidget) {
+    if (oldWidget.isExpandedSideBar != widget.isExpandedSideBar) {
+      setState(() {
+        isExpandedSideBar = widget.isExpandedSideBar;
+      });
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -187,175 +201,192 @@ class _SidebarMoonState extends State<SidebarMoon> {
   }
 
   Widget sideBar() {
-    return Container(
-      width: 250,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor ?? Colors.white,
-        border: const Border(
-          right: BorderSide(
-            color: Color.fromARGB(31, 211, 211, 211),
-          ),
+    return AnimatedSwitcher(
+      key: UniqueKey(),
+      duration: const Duration(milliseconds: 3000),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return ScaleTransition(scale: animation, child: child);
+      },
+      child: Container(
+        width: isExpandedSideBar ? 250 : 40,
+        decoration: BoxDecoration(
+          color: widget.backgroundColor ?? Colors.white,
+          border: isExpandedSideBar
+              ? const Border(
+                  right: BorderSide(
+                    color: Color.fromARGB(31, 211, 211, 211),
+                  ),
+                )
+              : null,
+          boxShadow: isExpandedSideBar
+              ? [
+                  AppBoxShadow.ksSmallShadow(
+                    color: const Color.fromARGB(31, 144, 144, 144),
+                  ),
+                ]
+              : [],
         ),
-        boxShadow: [
-          AppBoxShadow.ksSmallShadow(
-            color: const Color.fromARGB(31, 144, 144, 144),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(padding: const EdgeInsets.all(16), child: _renderUser()),
-          if (features.children.isNotEmpty)
-            Expanded(
-              child: TreeView.simple<TreeNodeExt>(
-                tree: features,
-                showRootNode: false,
-                indentation: const Indentation(width: 0),
-                expansionIndicatorBuilder: (context, node) {
-                  return ChevronIndicator.rightDown(
-                    alignment: Alignment.centerLeft,
-                    tree: node,
-                    color: Theme.of(context).primaryColor,
-                    icon: Icons.arrow_right_rounded,
-                  );
-                },
-                onTreeReady: (controller) {
-                  //todo check router
+        child: Column(
+          children: [
+            if (isExpandedSideBar) Container(padding: const EdgeInsets.all(16), child: _renderUser()),
+            if (features.children.isNotEmpty && isExpandedSideBar)
+              Expanded(
+                child: TreeView.simple<TreeNodeExt>(
+                  tree: features,
+                  showRootNode: false,
+                  indentation: const Indentation(width: 0),
+                  expansionIndicatorBuilder: (context, node) {
+                    return ChevronIndicator.rightDown(
+                      alignment: Alignment.centerLeft,
+                      tree: node,
+                      color: Theme.of(context).primaryColor,
+                      icon: Icons.arrow_right_rounded,
+                    );
+                  },
+                  onTreeReady: (controller) {
+                    //todo check router
 
-                  initTreeViewContrl(controller, context);
-                  widget.onTreeReady?.call(controller);
-                },
-                onItemTap: (item) {
-                  setState(() {
-                    featureSelected = item;
-                  });
-                  widget.onChangeFeature?.call(item, context);
-                },
-                builder: (context, node) {
-                  final isSelected = node.data == featureSelected?.data;
+                    initTreeViewContrl(controller, context);
+                    widget.onTreeReady?.call(controller);
+                  },
+                  onItemTap: (item) {
+                    setState(() {
+                      featureSelected = item;
+                    });
+                    widget.onChangeFeature?.call(item, context);
+                  },
+                  builder: (context, node) {
+                    final isSelected = node.data == featureSelected?.data;
 
-                  // final isExpanded = node.isExpanded;
-                  return MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Container(
-                      // height: 42,
-                      width: 250,
-                      // color: node.level >= 2 || isExpanded
-                      //     ? Color.fromARGB(255, 248, 250, 255)
-                      //     : null,
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: node.level >= 2 ? const EdgeInsets.only(left: 27) : EdgeInsets.zero,
-                        child: widget.itemBuilder != null
-                            ? widget.itemBuilder!.call(
-                                context,
-                                node,
-                                isSelected,
-                              )
-                            : Container(
-                                width: 250,
-                                height: 45, // The size dimension of the active button
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  gradient: isSelected
-                                      ? node.isLeaf
-                                          ? const LinearGradient(
-                                              colors: [
-                                                Color.fromARGB(255, 240, 244, 255),
-                                                Color.fromARGB(255, 207, 221, 255),
-                                              ],
-                                            )
-                                          : null
-                                      : null,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(
-                                      50,
-                                    ),
-                                    bottomLeft: Radius.circular(
-                                      50,
+                    // final isExpanded = node.isExpanded;
+                    return MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Container(
+                        // height: 42,
+                        width: 250,
+                        // color: node.level >= 2 || isExpanded
+                        //     ? Color.fromARGB(255, 248, 250, 255)
+                        //     : null,
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: node.level >= 2 ? const EdgeInsets.only(left: 27) : EdgeInsets.zero,
+                          child: widget.itemBuilder != null
+                              ? widget.itemBuilder!.call(
+                                  context,
+                                  node,
+                                  isSelected,
+                                )
+                              : Container(
+                                  width: 250,
+                                  height: 45, // The size dimension of the active button
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                    gradient: isSelected
+                                        ? node.isLeaf
+                                            ? const LinearGradient(
+                                                colors: [
+                                                  Color.fromARGB(255, 240, 244, 255),
+                                                  Color.fromARGB(255, 207, 221, 255),
+                                                ],
+                                              )
+                                            : null
+                                        : null,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(
+                                        50,
+                                      ),
+                                      bottomLeft: Radius.circular(
+                                        50,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 25,
-                                  ),
-                                  child: node.level >= 2
-                                      ? Text(
-                                          node.data?.name ?? '',
-                                          style: TextStyle(
-                                            color: isSelected ? Theme.of(context).primaryColor : null,
-                                            fontWeight: isSelected ? FontWeight.w600 : null,
-                                            fontSize: 13,
-                                          ),
-                                        )
-                                      : Row(
-                                          children: [
-                                            if (node.data?.icon != null) node.data!.icon! else Container(),
-                                            if (node.data?.icon != null)
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                            Text(
-                                              node.data?.name ?? '',
-                                              style: TextStyle(
-                                                color: isSelected ? Theme.of(context).primaryColor : null,
-                                                fontWeight: isSelected ? FontWeight.w600 : null,
-                                                fontSize: 14,
-                                              ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 25,
+                                    ),
+                                    child: node.level >= 2
+                                        ? Text(
+                                            node.data?.name ?? '',
+                                            style: TextStyle(
+                                              color: isSelected ? Theme.of(context).primaryColor : null,
+                                              fontWeight: isSelected ? FontWeight.w600 : null,
+                                              fontSize: 13,
                                             ),
-                                          ],
-                                        ),
+                                          )
+                                        : Row(
+                                            children: [
+                                              if (node.data?.icon != null) node.data!.icon! else Container(),
+                                              if (node.data?.icon != null)
+                                                const SizedBox(
+                                                  width: 12,
+                                                ),
+                                              Text(
+                                                node.data?.name ?? '',
+                                                style: TextStyle(
+                                                  color: isSelected ? Theme.of(context).primaryColor : null,
+                                                  fontWeight: isSelected ? FontWeight.w600 : null,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
                                 ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (isExpandedSideBar)
+                  Expanded(
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () async {
+                          widget.onTapLogout?.call();
+                        },
+                        icon: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              color: Theme.of(context).primaryColor,
+                              size: 18,
+                            ),
+                            Gap(12),
+                            Text(
+                              'Đăng xuất',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
                               ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Center(
-                  child: IconButton(
-                    onPressed: () async {
-                      widget.onTapLogout?.call();
-                    },
-                    icon: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: Theme.of(context).primaryColor,
-                          size: 18,
-                        ),
-                        Gap(12),
-                        Text(
-                          'Đăng xuất',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ],
+                  ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      isExpandedSideBar = !isExpandedSideBar;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: isExpandedSideBar ? 0 : 12),
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      isExpandedSideBar ? Icons.navigate_before : Icons.menu_rounded,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  child: Icon(
-                    Icons.navigate_before,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

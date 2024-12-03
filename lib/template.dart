@@ -79,3 +79,4 @@ part 'src/widgets/side_bar_moon/side_bar_moon.dart';
 part 'src/widgets/tab_container.dart';
 part 'src/widgets/react_icon.dart';
 part 'src/widgets/upload_mutiple_image.dart';
+part 'src/widgets/date_range_picker.dart';

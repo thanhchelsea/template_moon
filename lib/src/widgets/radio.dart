@@ -15,7 +15,7 @@ class AppRadio<T> extends StatefulWidget {
     required this.groupValue,
     required this.onChanged,
     this.title,
-    this.size = 16,
+    this.size = 12,
     this.type = KSRadioType.basic,
     this.activeBgColor,
     this.inactiveBgColor,
@@ -82,17 +82,13 @@ class AppRadio<T> extends StatefulWidget {
   State<AppRadio> createState() => _AppRadioState();
 }
 
-class _AppRadioState<T> extends State<AppRadio<T>>
-    with TickerProviderStateMixin {
+class _AppRadioState<T> extends State<AppRadio<T>> with TickerProviderStateMixin {
   bool get enable => widget.onChanged != null;
   bool selected = false;
-  Color get activeColor =>
-      widget.activeBgColor ?? Theme.of(context).primaryColor;
+  Color get activeColor => widget.activeBgColor ?? Theme.of(context).primaryColor;
   Color get inactiveColor => widget.inactiveBgColor ?? Colors.transparent;
-  Color get activeBorderColor =>
-      widget.activeBorderColor ?? Theme.of(context).primaryColor;
-  Color get inactiveBorderColor =>
-      widget.inactiveBorderColor ?? Theme.of(context).primaryColor;
+  Color get activeBorderColor => widget.activeBorderColor ?? Theme.of(context).primaryColor;
+  Color get inactiveBorderColor => widget.inactiveBorderColor ?? Theme.of(context).primaryColor;
 
   double _borderRadius() {
     return widget.shape == KSShape.circle ? 1000 : 12;
@@ -118,11 +114,7 @@ class _AppRadioState<T> extends State<AppRadio<T>>
       width: widget.size,
       height: widget.size,
       decoration: BoxDecoration(
-        color: selected
-            ? (widget.enable
-                ? activeColor
-                : Theme.of(context).primaryColor.withOpacity(0.6))
-            : inactiveColor,
+        color: selected ? (widget.enable ? activeColor : Theme.of(context).primaryColor.withOpacity(0.6)) : inactiveColor,
         borderRadius: BorderRadius.circular(_borderRadius()),
         border: Border.all(
           color: selected ? activeBorderColor : inactiveBorderColor,
@@ -154,8 +146,7 @@ class _AppRadioState<T> extends State<AppRadio<T>>
         child: Row(
           children: [
             _renderRadio(),
-            if (widget.title != null || widget.nameRadio != null)
-              const SizedBox(width: 6),
+            if (widget.title != null || widget.nameRadio != null) const SizedBox(width: 6),
             _renderTitle(),
           ],
         ),
