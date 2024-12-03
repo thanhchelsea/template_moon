@@ -19,7 +19,7 @@ class SelectedTimeRangeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MenuAnchor(
-      style: MenuStyle(backgroundColor: const WidgetStatePropertyAll(Colors.white)),
+      style: const MenuStyle(backgroundColor: WidgetStatePropertyAll(Colors.white)),
       builder: (context, controllerMenu, child) {
         return InkWell(
           onTap: () {
