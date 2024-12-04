@@ -86,7 +86,6 @@ class _DataTableCustomState extends State<DataTableCustom> {
           // horizontalMargin: 12,
           columns: widget.columns,
           showCheckboxColumn: false,
-
           rows: widget.rows,
         ),
       ),

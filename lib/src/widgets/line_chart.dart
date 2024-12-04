@@ -15,12 +15,15 @@ class LineChart<T, U> extends StatefulWidget {
     this.getNameUnitOY,
     this.tooltipBuilder,
     this.chartType,
+    this.dataLabelMapper,
   });
   Map<T, List<ChartData<U>>> data;
   String Function(dynamic t) getLineName;
   String charName;
   bool isSpline;
   String Function(int value)? getNameUnitOY;
+  String Function(int value)? dataLabelMapper;
+
   ChartType? chartType;
   Widget Function(
     dynamic data,
@@ -259,9 +262,10 @@ class _LineChartState<T, U> extends State<LineChart> {
         name: columnName, // Đặt tên cho từng series
 
         dataLabelSettings: const DataLabelSettings(
-          isVisible: false, // Hiển thị nhãn dữ liệu trên cột
-          textStyle: TextStyle(color: Colors.black),
+          isVisible: true, // Hiển thị nhãn dữ liệu trên cột
+          textStyle: TextStyle(color: Colors.black45, fontSize: 10),
         ),
+        dataLabelMapper: (ChartData data, _) => widget.dataLabelMapper?.call(data.y ?? 0) ?? '',
       );
     }).toList();
   }

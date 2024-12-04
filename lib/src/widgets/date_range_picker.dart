@@ -33,21 +33,22 @@ class SelectedTimeRangeWidget extends StatelessWidget {
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
             decoration: decoration ??
                 BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [AppBoxShadow.ksSmallShadow()],
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(width: 0.4),
+                  // border: Border.all(width: 0.4),
                 ),
             child: Row(
               children: [
                 Icon(
                   Icons.calendar_month,
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 const Gap(10),
                 Text(
                   "${DateFormat('dd/MM/yyyy').format(startTimeInit)} - ${DateFormat('dd/MM/yyyy').format(endTimeInit)}",
                   style: titleStyle ??
                       TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -127,14 +128,14 @@ class SelectedTimeRangeWidget extends StatelessWidget {
           child: const Text('Tháng này'),
           onPressed: () {
             // Ngày hiện tại
-            DateTime now = DateTime(
+            DateTime s = DateTime(
               DateTime.now().year,
               DateTime.now().month,
-              DateTime.now().day,
+              // DateTime.now().day,
             );
             //ngày đầu tháng này
-            DateTime firstDayOfLastMonth = DateTime(now.year, now.month, 1);
-            onSelectDate.call(firstDayOfLastMonth, now);
+            DateTime e = DateTime(DateTime.now().year, DateTime.now().month + 1);
+            onSelectDate.call(s, e);
           },
         ),
         MenuItemButton(
