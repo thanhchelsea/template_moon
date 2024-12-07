@@ -47,10 +47,7 @@ class SelectedTimeRangeWidget extends StatelessWidget {
                 const Gap(10),
                 Text(
                   "${DateFormat('dd/MM/yyyy').format(startTimeInit)} - ${DateFormat('dd/MM/yyyy').format(endTimeInit)}",
-                  style: titleStyle ??
-                      TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: titleStyle ?? const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ],
             ),

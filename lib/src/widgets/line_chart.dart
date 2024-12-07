@@ -4,10 +4,11 @@ enum ChartType {
   spilne,
   line,
   column,
+  pie,
 }
 
-class LineChart<T, U> extends StatefulWidget {
-  LineChart({
+class ChartMoon<T, U> extends StatefulWidget {
+  ChartMoon({
     required this.data,
     required this.getLineName,
     required this.charName,
@@ -33,10 +34,10 @@ class LineChart<T, U> extends StatefulWidget {
     int seriesIndex,
   )? tooltipBuilder;
   @override
-  _LineChartState createState() => _LineChartState<T, U>();
+  _ChartMoonState createState() => _ChartMoonState<T, U>();
 }
 
-class _LineChartState<T, U> extends State<LineChart> {
+class _ChartMoonState<T, U> extends State<ChartMoon> {
   @override
   Widget build(BuildContext context) {
     Widget child = Container();
@@ -55,77 +56,82 @@ class _LineChartState<T, U> extends State<LineChart> {
       case ChartType.column:
         series = _getColumnSeries();
         break;
+      case ChartType.pie: // Thêm hỗ trợ biểu đồ tròn
+        child = _buildPieChart();
+        break;
       default:
         series = _getLineSeries();
     }
 
-    child = Scaffold(
-      body: SfCartesianChart(
-        // Cho phép zoom và pan (cuộn)
-        zoomPanBehavior: ZoomPanBehavior(
-          enablePinching: true, // Cho phép zoom in/out bằng cử chỉ pinch
-          enablePanning: true, // Cho phép cuộn khi phóng to
-          enableDoubleTapZooming: true,
-          enableMouseWheelZooming: true,
-          enableSelectionZooming: true,
-        ),
-        tooltipBehavior: TooltipBehavior(
-          enable: true,
-          canShowMarker: false,
-          color: const Color.fromARGB(255, 239, 246, 255),
-          animationDuration: 150,
-          textStyle: const TextStyle(
-            color: Colors.black,
+    if (widget.chartType != ChartType.pie) {
+      child = Scaffold(
+        body: SfCartesianChart(
+          // Cho phép zoom và pan (cuộn)
+          zoomPanBehavior: ZoomPanBehavior(
+            enablePinching: true, // Cho phép zoom in/out bằng cử chỉ pinch
+            enablePanning: true, // Cho phép cuộn khi phóng to
+            enableDoubleTapZooming: true,
+            enableMouseWheelZooming: true,
+            enableSelectionZooming: true,
           ),
-          format: widget.tooltipBuilder != null ? 'point.x : point.y' : null, // Định dạng mặc định
-          builder: widget.tooltipBuilder,
-          // builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
-          //   final value = data.y;
-          //   return Text(
-          //     '${_formatCurrency(value)}',
-          //     style: const TextStyle(color: Colors.black),
-          //   );
-          // },
+          tooltipBehavior: TooltipBehavior(
+            enable: true,
+            canShowMarker: false,
+            color: const Color.fromARGB(255, 239, 246, 255),
+            animationDuration: 150,
+            textStyle: const TextStyle(
+              color: Colors.black,
+            ),
+            format: widget.tooltipBuilder != null ? 'point.x : point.y' : null, // Định dạng mặc định
+            builder: widget.tooltipBuilder,
+            // builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+            //   final value = data.y;
+            //   return Text(
+            //     '${_formatCurrency(value)}',
+            //     style: const TextStyle(color: Colors.black),
+            //   );
+            // },
+          ),
+          primaryXAxis: u is DateTime
+              ? DateTimeAxis(
+                  dateFormat: DateFormat('dd/MM'), // Hiển thị ngày tháng trên trục hoành
+                  intervalType: DateTimeIntervalType.days,
+                  minimum: findMinX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày bắt đầu
+                  maximum: findMaxX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày kết thúc
+                  majorGridLines: const MajorGridLines(width: 0),
+                  majorTickLines: const MajorTickLines(size: 0),
+                )
+              : const CategoryAxis(
+                  labelsExtent: 50,
+                  labelIntersectAction: AxisLabelIntersectAction.multipleRows,
+                  majorGridLines: MajorGridLines(width: 0),
+                  majorTickLines: MajorTickLines(size: 0),
+                  labelStyle: TextStyle(fontSize: 10),
+                ),
+          primaryYAxis: NumericAxis(
+            majorGridLines: MajorGridLines(width: 0),
+            majorTickLines: MajorTickLines(size: 0),
+            axisLabelFormatter: (axisLabelRenderArgs) {
+              final value = axisLabelRenderArgs.value.toInt();
+              return ChartAxisLabel(
+                widget.getNameUnitOY?.call(value) ?? value.shorten(),
+                const TextStyle(color: Colors.black),
+              );
+            },
+          ),
+          // tooltipBehavior: TooltipBehavior(
+          //   enable: true,
+          //   canShowMarker: false,
+          //   color: const Color.fromARGB(255, 239, 246, 255),
+          //   animationDuration: 150,
+          //   textStyle: const TextStyle(
+          //     color: Colors.black,
+          //   ),
+          // ), // Hiển thị giá trị khi người dùng nhấn vào điểm
+          series: series as List<CartesianSeries<dynamic, dynamic>>,
         ),
-        primaryXAxis: u is DateTime
-            ? DateTimeAxis(
-                dateFormat: DateFormat('dd/MM'), // Hiển thị ngày tháng trên trục hoành
-                intervalType: DateTimeIntervalType.days,
-                minimum: findMinX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày bắt đầu
-                maximum: findMaxX(widget.data as Map<dynamic, List<ChartData<DateTime>>>), // Giới hạn ngày kết thúc
-                majorGridLines: const MajorGridLines(width: 0),
-                majorTickLines: const MajorTickLines(size: 0),
-              )
-            : const CategoryAxis(
-                labelsExtent: 50,
-                labelIntersectAction: AxisLabelIntersectAction.multipleRows,
-                majorGridLines: MajorGridLines(width: 0),
-                majorTickLines: MajorTickLines(size: 0),
-                labelStyle: TextStyle(fontSize: 10),
-              ),
-        primaryYAxis: NumericAxis(
-          majorGridLines: MajorGridLines(width: 0),
-          majorTickLines: MajorTickLines(size: 0),
-          axisLabelFormatter: (axisLabelRenderArgs) {
-            final value = axisLabelRenderArgs.value.toInt();
-            return ChartAxisLabel(
-              widget.getNameUnitOY?.call(value) ?? value.shorten(),
-              const TextStyle(color: Colors.black),
-            );
-          },
-        ),
-        // tooltipBehavior: TooltipBehavior(
-        //   enable: true,
-        //   canShowMarker: false,
-        //   color: const Color.fromARGB(255, 239, 246, 255),
-        //   animationDuration: 150,
-        //   textStyle: const TextStyle(
-        //     color: Colors.black,
-        //   ),
-        // ), // Hiển thị giá trị khi người dùng nhấn vào điểm
-        series: series as List<CartesianSeries<dynamic, dynamic>>,
-      ),
-    );
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.only(left: 12, right: 12, top: 12),
@@ -268,6 +274,85 @@ class _LineChartState<T, U> extends State<LineChart> {
         dataLabelMapper: (ChartData data, _) => widget.dataLabelMapper?.call(data.y ?? 0) ?? '',
       );
     }).toList();
+  }
+
+  Widget _buildPieChart() {
+    return Row(
+      children: [
+        Expanded(
+          child: SfCircularChart(
+            tooltipBehavior: TooltipBehavior(
+              enable: true,
+              canShowMarker: false,
+              color: const Color.fromARGB(255, 239, 246, 255),
+              animationDuration: 150,
+              textStyle: const TextStyle(
+                color: Colors.black,
+              ),
+            ), // Hiển thị giá trị khi người dùng nhấn vào điểm
+            series: _getPieSeries(),
+          ),
+        ),
+        const Gap(12),
+        Container(
+          width: 400,
+          child: Wrap(
+            children: List.generate(
+              widget.data.values.first.length,
+              (index) {
+                return Container(
+                  width: 200, // Đặt chiều rộng tối đa
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: widget.data.values.first[index].color, // Màu của mục chú thích khớp với phần biểu đồ
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Flexible(
+                        child: Text(
+                          widget.data.values.first[index].x.toString(),
+                          style: const TextStyle(fontSize: 12),
+                          overflow: TextOverflow.ellipsis, // Thêm dấu "..." nếu quá dài
+                          maxLines: 2, // Giới hạn số dòng
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  List<PieSeries<ChartData, dynamic>> _getPieSeries() {
+    final List<ChartData<dynamic>> pieData = widget.data.entries.expand((entry) => entry.value).toList();
+
+    return [
+      PieSeries<ChartData, dynamic>(
+        dataSource: pieData,
+        xValueMapper: (ChartData data, _) => widget.getLineName(data.x),
+        yValueMapper: (ChartData data, _) => data.y,
+        pointColorMapper: (ChartData data, _) => data.color, // Ánh xạ màu từ dữ liệu
+        explodeAll: true,
+        dataLabelMapper: (ChartData data, _) => widget.dataLabelMapper?.call(data.y ?? 0) ?? '',
+
+        dataLabelSettings: const DataLabelSettings(
+          isVisible: true,
+          textStyle: TextStyle(fontSize: 10),
+
+          // connectorLineSettings: const ConnectorLineSettings(width: 0, color: Colors.transparent),
+        ),
+      ),
+    ];
   }
 }
 
