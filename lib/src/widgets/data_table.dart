@@ -72,7 +72,7 @@ class _DataTableCustomState extends State<DataTableCustom> {
           dataRowColor: WidgetStateProperty.all(widget.backgoundColor ?? Colors.white),
           columnSpacing: 12,
           horizontalMargin: widget.paddingHorzi ?? 12,
-          minWidth: 600,
+
           headingRowHeight: 40,
           headingRowColor: WidgetStatePropertyAll(
             widget.headingColor ?? _themeColorEx?.ksPrimary,
@@ -80,8 +80,9 @@ class _DataTableCustomState extends State<DataTableCustom> {
           headingTextStyle: const TextStyle(color: Colors.white),
           dataRowHeight: widget.dataRowHeight,
           // fixedColumnsColor: Colors.red,
-          isHorizontalScrollBarVisible: false,
+          isHorizontalScrollBarVisible: true,
           isVerticalScrollBarVisible: true,
+
           // columnSpacing: 12,
           // horizontalMargin: 12,
           columns: widget.columns,
