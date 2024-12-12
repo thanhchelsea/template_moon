@@ -20,7 +20,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
     if (image != null) {
       // Đọc dữ liệu byte từ ảnh
       final imageBytes = await image.readAsBytes();
-      widget.getImageByte?.call(imageBytes);
+      widget.getImageByte.call(imageBytes);
       setState(() {});
     }
   }
@@ -54,9 +54,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
               Icon(
                 Icons.upload,
                 size: 18,
-                color: Theme.of(context)
-                    .extension<ThemeColorExtension>()
-                    ?.ksPrimary,
+                color: Theme.of(context).extension<ThemeColorExtension>()?.ksPrimary,
               ),
             ],
           ),

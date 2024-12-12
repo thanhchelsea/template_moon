@@ -70,18 +70,17 @@ class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
         });
       }
     } else {
-      if (widget.dio != null) {
-        var response = await AdvertUsecase(FeatRepoImpl(FeatService(
-          widget.dio!,
-          baseUrl: widget.baseUrl,
-        ))).uploadImage(
-          images: s,
-        );
-        setState(() {
-          controller.text = response.data?.filePath ?? '';
-          urlImage = response.data?.filePath ?? '';
-        });
-      }
+      var response = await AdvertUsecase(FeatRepoImpl(FeatService(
+        widget.dio ?? Dio(),
+        baseUrl: widget.baseUrl,
+      ))).uploadImage(
+        images: s,
+      );
+      print(response.toString());
+      setState(() {
+        controller.text = response.data?.filePath ?? '';
+        urlImage = response.data?.filePath ?? '';
+      });
     }
   }
 

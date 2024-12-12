@@ -15,10 +15,9 @@ class AdvertUsecase {
     FormData formData = FormData.fromMap({
       "formFile": MultipartFile.fromBytes(
         images,
-        filename: "filename",
+        filename: "filename.gif",
       ),
     });
-
     var data = _advertRepo.uploadImage(checksum: md5.convert(images).toString(), formData: formData);
     return data;
   }
