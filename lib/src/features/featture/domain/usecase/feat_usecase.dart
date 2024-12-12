@@ -11,14 +11,13 @@ class AdvertUsecase {
   AdvertUsecase(this._advertRepo);
   final FeatRepository _advertRepo;
 
-  Future<BaseModel<ImageUploadData?>> uploadImage({required Uint8List images}) async {
+  Future<BaseModel<ImageUploadData?>> uploadImage({required Uint8List images, String? filename}) async {
     FormData formData = FormData.fromMap({
       "formFile": MultipartFile.fromBytes(
         images,
-        filename: "filename",
+        filename: filename ?? "filename",
       ),
     });
-
     var data = _advertRepo.uploadImage(checksum: md5.convert(images).toString(), formData: formData);
     return data;
   }
