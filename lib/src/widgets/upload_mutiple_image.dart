@@ -172,7 +172,7 @@ class _UploadMutipleImageState extends State<UploadMutipleImage> {
             dashPattern: const [5, 5],
             strokeCap: StrokeCap.round,
             child: UploadImageWidget(
-              getImageByte: (s) {
+              getImageByte: (s, fileName) {
                 uploadImage(s);
               },
             ),
