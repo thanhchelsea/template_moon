@@ -6,7 +6,7 @@ class UploadImageWidget extends StatefulWidget {
     super.key,
   });
   // ignore: inference_failure_on_function_return_type
-  final Function(Uint8List byte) getImageByte;
+  final Function(Uint8List byte, String? fileName) getImageByte;
   @override
   State<UploadImageWidget> createState() => _UploadImageWidgetState();
 }
@@ -20,7 +20,8 @@ class _UploadImageWidgetState extends State<UploadImageWidget> {
     if (image != null) {
       // Đọc dữ liệu byte từ ảnh
       final imageBytes = await image.readAsBytes();
-      widget.getImageByte.call(imageBytes);
+      String? fileName = image.name.contains('.gif') ? 'filname.gif' : null;
+      widget.getImageByte.call(imageBytes, fileName);
       setState(() {});
     }
   }

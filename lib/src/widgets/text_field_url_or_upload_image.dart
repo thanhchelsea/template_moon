@@ -58,7 +58,7 @@ class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
     super.dispose();
   }
 
-  void uploadImage(Uint8List s) async {
+  void uploadImage(Uint8List s, String? fileName) async {
     // var response = await _advertUsecase.uploadImage(images: s);
     if (widget.uploadImage != null) {
       String? imagePath = await widget.uploadImage?.call(s);
@@ -75,8 +75,8 @@ class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
         baseUrl: widget.baseUrl,
       ))).uploadImage(
         images: s,
+        filename: fileName,
       );
-      print(response.toString());
       setState(() {
         controller.text = response.data?.filePath ?? '';
         urlImage = response.data?.filePath ?? '';
@@ -146,8 +146,8 @@ class _TextFieldUrlOrUploadImageState extends State<TextFieldUrlOrUploadImage> {
                     ],
                   )
                 : UploadImageWidget(
-                    getImageByte: (s) {
-                      uploadImage(s);
+                    getImageByte: (s, fileName) {
+                      uploadImage(s, fileName);
                     },
                   ),
           ),
